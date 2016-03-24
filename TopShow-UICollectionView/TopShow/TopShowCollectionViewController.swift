@@ -1,10 +1,4 @@
-//
-//  TopShowCollectionViewController.swift
-//  TopShow
-//
-//  Created by Jared Franzone on 3/22/16.
-//  Copyright © 2016 Jared Franzone. All rights reserved.
-//
+
 
 import UIKit
 import AVFoundation
