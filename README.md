@@ -3,4 +3,4 @@ CocoaNutsDemo: Custom UICollectionView
 
 The App
 
-![alt text](Simulator Screen Shot Apr 7, 2016, 3.46.29 PM.png "The App.")
+![alt text](screenshot.png "The App.")
