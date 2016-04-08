@@ -2,7 +2,7 @@
 import Foundation
 import UIKit
 
-class Show {
+final class Show {
     
     // Properties of our show
     var title: String

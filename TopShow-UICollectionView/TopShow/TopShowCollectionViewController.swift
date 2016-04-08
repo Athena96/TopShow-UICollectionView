@@ -3,10 +3,10 @@
 import UIKit
 import AVFoundation
 
-class TopShowCollectionViewController: UICollectionViewController {
+final class TopShowCollectionViewController: UICollectionViewController {
 
     // Holds our list of shows to display
-    var shows = ShowList().getListOfShows()
+    private var shows = ShowList().getListOfShows()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,9 +51,10 @@ class TopShowCollectionViewController: UICollectionViewController {
         
         let cell = collectionView.cellForItemAtIndexPath(indexPath) as! ShowCollectionViewCell
         
-        cell.show?.rating = ((cell.show?.rating)! < 5) ? (cell.show?.rating)! + 1 : 1
-        
-        collectionView.reloadData()
+        if let rating = cell.show?.rating {
+            cell.show?.rating = (rating < 5) ? rating + 1 : 1
+            collectionView.reloadData()
+        }
         
     }
 

@@ -2,13 +2,13 @@
 
 import UIKit
 
-class ShowCollectionViewCell: UICollectionViewCell {
+final class ShowCollectionViewCell: UICollectionViewCell {
     
-    @IBOutlet weak var showImageView: UIImageView!
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var ratingLabel: UILabel!
+    @IBOutlet private weak var showImageView: UIImageView!
+    @IBOutlet private weak var titleLabel: UILabel!
+    @IBOutlet private weak var ratingLabel: UILabel!
     
-    @IBOutlet weak var imageHeightConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var imageHeightConstraint: NSLayoutConstraint!
     
     var show: Show? {
         didSet {
@@ -28,7 +28,7 @@ class ShowCollectionViewCell: UICollectionViewCell {
         if let attributes = layoutAttributes as? ShowLayoutAttributes {
             imageHeightConstraint.constant = attributes.photoHeight
             
-
+            // Uncomment to have rounded corners on your cell.
             // self.clipsToBounds = true
             // self.layer.cornerRadius = CGFloat(7)
             

@@ -7,7 +7,7 @@ protocol ShowLayoutDelegate {
     func collectionView(collectionView:UICollectionView, heightForPhotoAtIndexPath indexPath:NSIndexPath , withWidth:CGFloat) -> CGFloat
 }
 
-class ShowLayoutAttributes: UICollectionViewLayoutAttributes {
+final class ShowLayoutAttributes: UICollectionViewLayoutAttributes {
     
     // Custom attribute
     var photoHeight: CGFloat = 0.0
@@ -31,14 +31,14 @@ class ShowLayoutAttributes: UICollectionViewLayoutAttributes {
     
 }
 
-class ShowLayout: UICollectionViewLayout {
+final class ShowLayout: UICollectionViewLayout {
     // Layout Delegate
     var delegate:ShowLayoutDelegate!
     
     // Configurable properties
-    var numberOfColumns = 2
-    var cellPadding: CGFloat = 6.0
-    var cellPaddingBottom: CGFloat = 56.0
+    private var numberOfColumns = 2
+    private var cellPadding: CGFloat = 6.0
+    private var cellPaddingBottom: CGFloat = 56.0
     
     // Array to keep a cache of attributes.
     private var cache = [ShowLayoutAttributes]()
@@ -47,12 +47,20 @@ class ShowLayout: UICollectionViewLayout {
     private var contentHeight:CGFloat  = 0.0
     
     private var contentWidth: CGFloat {
-        let insets = collectionView!.contentInset
-        return CGRectGetWidth(collectionView!.bounds) - (insets.left + insets.right)
+        guard let collectionV = collectionView else {
+            return 0.0
+        }
+        
+        return CGRectGetWidth(collectionV.bounds) - (collectionV.contentInset.left + collectionV.contentInset.right)
     }
     
     override func prepareLayout() {
         //  Only calculate once
+        
+        guard let collectionV = collectionView else {
+            return
+        }
+        
         if cache.isEmpty {
             
             // Pre-Calculates the X Offset for every column and adds an array to increment the currently max Y Offset for each column
@@ -66,13 +74,13 @@ class ShowLayout: UICollectionViewLayout {
             
             
             //  Iterates through the list of items in the first section
-            for item in 0 ..< collectionView!.numberOfItemsInSection(0) {
+            for item in 0 ..< collectionV.numberOfItemsInSection(0) {
                 
                 let indexPath = NSIndexPath(forItem: item, inSection: 0)
                 
                 //  Asks the delegate for the height of the picture and the annotation and calculates the cell frame.
                 let width = columnWidth - cellPadding * 2
-                let photoHeight = delegate.collectionView(collectionView!, heightForPhotoAtIndexPath: indexPath , withWidth:width)
+                let photoHeight = delegate.collectionView(collectionV, heightForPhotoAtIndexPath: indexPath , withWidth:width)
                 let height = cellPadding +  photoHeight  + cellPaddingBottom
                 let frame = CGRect(x: xOffset[column], y: yOffset[column], width: columnWidth, height: height)
                 let insetFrame = CGRectInset(frame, cellPadding, cellPadding)
@@ -92,6 +100,7 @@ class ShowLayout: UICollectionViewLayout {
             } // end for....
             
         } // end the cache check
+        
     } // end prep layout
     
     override func collectionViewContentSize() -> CGSize {
