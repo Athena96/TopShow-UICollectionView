@@ -4,7 +4,7 @@ import Foundation
 
 final class ShowList {
     
-    func getListOfShows() -> [Show] {
+    func createListOfShows() -> [Show] {
         
         let showList = [
             "House of Cards",
