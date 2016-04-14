@@ -2,7 +2,12 @@
 import Foundation
 import UIKit
 
- final class Show {
+
+/**
+ * Class because I allow the user to change the state of the
+ * object when they tap on a show in the collection view (changing the rating).
+ */
+final class Show {
     
     // Properties of our show
     var title: String

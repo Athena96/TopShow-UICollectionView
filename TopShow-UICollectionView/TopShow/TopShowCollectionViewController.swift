@@ -38,7 +38,6 @@ final class TopShowCollectionViewController: UICollectionViewController {
         if let cell = collectionView.dequeueReusableCellWithReuseIdentifier("ShowCollectionViewCell", forIndexPath: indexPath) as? ShowCollectionViewCell {
             cell.show = shows[indexPath.item]
             return cell
-
         } else {
             return UICollectionViewCell()
         }
