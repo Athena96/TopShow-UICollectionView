@@ -1,10 +1,23 @@
+//
+//  Show.swift
+//  TopShow
+//
+//  Created by Jared Franzone on 8/19/16.
+//  Copyright © 2016 Jared Franzone. All rights reserved.
+//
 
-import UIKit
 import Foundation
+import UIKit
 
-final class ShowList {
+struct Show {
     
-    func createListOfShows() -> [Show] {
+    var title: String
+    
+    var rating: Int
+    
+    var image: UIImage
+    
+    static func createListOfShows() -> [Show] {
         
         let showList = [
             "House of Cards",
@@ -38,9 +51,9 @@ final class ShowList {
         }
         
         // sort the list; greatest to least (by the rating)
-        showsToReturn.sortInPlace({ $0.rating > $1.rating })
+        showsToReturn.sort(by: { $0.rating > $1.rating })
         
         return showsToReturn
     }
-    
+
 }

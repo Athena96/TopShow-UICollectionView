@@ -1,10 +1,16 @@
-
+//
+//  ShowLayout.swift
+//  TopShow
+//
+//  Created by Jared Franzone on 8/19/16.
+//  Copyright © 2016 Jared Franzone. All rights reserved.
+//
 
 import UIKit
 
 protocol ShowLayoutDelegate {
     // Method to ask the delegate for the height of the image
-    func collectionView(collectionView:UICollectionView, heightForPhotoAtIndexPath indexPath:NSIndexPath , withWidth:CGFloat) -> CGFloat
+    func collectionView(_ collectionView:UICollectionView, heightForPhotoAtIndexPath indexPath:IndexPath , withWidth:CGFloat) -> CGFloat
 }
 
 final class ShowLayoutAttributes: UICollectionViewLayoutAttributes {
@@ -13,14 +19,14 @@ final class ShowLayoutAttributes: UICollectionViewLayoutAttributes {
     var photoHeight: CGFloat = 0.0
     
     // Override copyWithZone to conform to NSCopying protocol
-    override func copyWithZone(zone: NSZone) -> AnyObject {
-        let copy = super.copyWithZone(zone) as! ShowLayoutAttributes
+    override func copy(with zone: NSZone?) -> AnyObject {
+        let copy = super.copy(with: zone) as! ShowLayoutAttributes
         copy.photoHeight = photoHeight
         return copy
     }
     
     // Override isEqual
-    override func isEqual(object: AnyObject?) -> Bool {
+    override func isEqual(_ object: AnyObject?) -> Bool {
         if let attributtes = object as? ShowLayoutAttributes {
             if( attributtes.photoHeight == photoHeight  ) {
                 return super.isEqual(object)
@@ -32,6 +38,7 @@ final class ShowLayoutAttributes: UICollectionViewLayoutAttributes {
 }
 
 final class ShowLayout: UICollectionViewLayout {
+    
     // Layout Delegate
     var delegate:ShowLayoutDelegate!
     
@@ -50,11 +57,10 @@ final class ShowLayout: UICollectionViewLayout {
         guard let collectionV = collectionView else {
             return 0.0
         }
-        
-        return CGRectGetWidth(collectionV.bounds) - (collectionV.contentInset.left + collectionV.contentInset.right)
+        return collectionV.bounds.width - (collectionV.contentInset.left + collectionV.contentInset.right)
     }
-    
-    override func prepareLayout() {
+
+    override func prepare() {
         //  Only calculate once
         
         guard let collectionV = collectionView else {
@@ -70,29 +76,29 @@ final class ShowLayout: UICollectionViewLayout {
                 xOffset.append(CGFloat(column) * columnWidth )
             }
             var column = 0
-            var yOffset = [CGFloat](count: numberOfColumns, repeatedValue: 0)
+            var yOffset = [CGFloat](repeating: 0, count: numberOfColumns)
             
             
             //  Iterates through the list of items in the first section
-            for item in 0 ..< collectionV.numberOfItemsInSection(0) {
+            for item in 0 ..< collectionV.numberOfItems(inSection: 0) {
                 
-                let indexPath = NSIndexPath(forItem: item, inSection: 0)
+                let indexPath = IndexPath(item: item, section: 0)
                 
                 //  Asks the delegate for the height of the picture and the annotation and calculates the cell frame.
                 let width = columnWidth - cellPadding * 2
                 let photoHeight = delegate.collectionView(collectionV, heightForPhotoAtIndexPath: indexPath , withWidth:width)
                 let height = cellPadding +  photoHeight  + cellPaddingBottom
                 let frame = CGRect(x: xOffset[column], y: yOffset[column], width: columnWidth, height: height)
-                let insetFrame = CGRectInset(frame, cellPadding, cellPadding)
+                let insetFrame = frame.insetBy(dx: cellPadding, dy: cellPadding)
                 
                 // Creates an UICollectionViewLayoutItem with the frame and add it to the cache
-                let attributes = ShowLayoutAttributes(forCellWithIndexPath: indexPath)
+                let attributes = ShowLayoutAttributes(forCellWith: indexPath)
                 attributes.photoHeight = photoHeight
                 attributes.frame = insetFrame
                 cache.append(attributes)
                 
                 //  Updates the collection view content height
-                contentHeight = max(contentHeight, CGRectGetMaxY(frame))
+                contentHeight = max(contentHeight, frame.maxY)
                 yOffset[column] = yOffset[column] + height
                 
                 column = column >= (numberOfColumns - 1) ? 0 : column + 1
@@ -103,25 +109,32 @@ final class ShowLayout: UICollectionViewLayout {
         
     } // end prep layout
     
-    override func collectionViewContentSize() -> CGSize {
+    
+    override public func invalidateLayout() {
+        self.cache.removeAll()
+        super.invalidateLayout()
+        
+    }
+    
+    override var collectionViewContentSize: CGSize {
         return CGSize(width: contentWidth, height: contentHeight)
     }
     
-    override func layoutAttributesForElementsInRect(rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+    override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         
         var layoutAttributes = [UICollectionViewLayoutAttributes]()
         
         // Loop through the cache and look for items in the rect
         for attributes  in cache {
-            if CGRectIntersectsRect(attributes.frame, rect ) {
+            if attributes.frame.intersects(rect ) {
                 layoutAttributes.append(attributes)
             }
         }
         return layoutAttributes
     }
     
-    override class func layoutAttributesClass() -> AnyClass {
+    override class var layoutAttributesClass: AnyClass {
         return ShowLayoutAttributes.self
     }
-    
+
 }
