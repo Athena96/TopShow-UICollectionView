@@ -19,13 +19,38 @@ final class ShowLayoutAttributes: UICollectionViewLayoutAttributes {
     var photoHeight: CGFloat = 0.0
     
     // Override copyWithZone to conform to NSCopying protocol
-    override func copy(with zone: NSZone?) -> AnyObject {
+    override func copy(with zone: NSZone? = nil) -> Any {
         let copy = super.copy(with: zone) as! ShowLayoutAttributes
         copy.photoHeight = photoHeight
         return copy
     }
     
+    /*
+    override func copy() -> Any {
+        let copy = super.copy() as! ShowLayoutAttributes
+        let copy = super.copy(with: zone) as! ShowLayoutAttributes
+        copy.photoHeight = photoHeight
+        return copy
+    }
+ */
+    /*
+    override func copy(with zone: NSZone?) -> AnyObject {
+        let copy = super.copy(with: zone) as! ShowLayoutAttributes
+        copy.photoHeight = photoHeight
+        return copy
+    }
+    */
+    
     // Override isEqual
+    override func isEqual(_ object: Any?) -> Bool {
+        if let attributtes = object as? ShowLayoutAttributes {
+            if( attributtes.photoHeight == photoHeight  ) {
+                return super.isEqual(object)
+            }
+        }
+        return false
+    }    
+    /*
     override func isEqual(_ object: AnyObject?) -> Bool {
         if let attributtes = object as? ShowLayoutAttributes {
             if( attributtes.photoHeight == photoHeight  ) {
@@ -34,6 +59,7 @@ final class ShowLayoutAttributes: UICollectionViewLayoutAttributes {
         }
         return false
     }
+ */
     
 }
 

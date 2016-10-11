@@ -19,7 +19,7 @@ class ShowCollectionViewCell: UICollectionViewCell {
             if let newShow = show {
                 showImageView.image = newShow.image
                 titleLabel.text = newShow.title
-                ratingLabel.text = String(repeating: ("★" as Character), count: newShow.rating)
+                ratingLabel.text = String(repeating: "★", count: newShow.rating)
             }
         }
     }
